@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Эксперимент {% endblock %}
+{% block content %}
+	{%load plotly_dash%}
+	<div class="container">
+		<div class="img-container">
+			<h2>Уравнение, нормированное по времени</h2>
+    		<img class ="formula-img" src="{% static 'formula.png' %}">
+		</div>
+		<form action="{% url 'experiment' %}" method="post">
+			{% csrf_token %}
+			<div class="param-container">
+				<h2>Рассчетная область</h2>
+				<h3>Ось времени</h3>
+				<div class="param-input">
+					<label class="param-label">Размер T:</label>
+					{{ form.T }}
+				</div>
+				{% if form.T.errors %}
+				<div class="errors-container">{{ form.T.errors }}</div>
+				{% endif %}
+
+				<div class="param-input">
+					<label class="param-label">Число точек:</label>
+					{{ form.N }}
+				</div>
+
+				<h3>Длина среды</h3>
+				<div class="param-input">
+					<label class="param-label">Нормирующая длина:</label>
+					{{ form.norm_length }}
+				</div>
+				<div class="param-input">
+					<label class="param-label">Размер:</label>
+					{{ form.L }}
+				</div>
+
+				{% if form.L.errors %}
+				<div class="errors-container">{{ form.L.errors }}</div>
+				{% endif %}
+
+				<div class="param-input">
+					<label class="param-label">Число точек:</label>
+					{{ form.N1 }}
+				</div>
+				{% if form.N1.errors %}
+				<div class="errors-container">{{ form.N1.errors }}</div>
+				{% endif %}
+			</div>
+			<div class="param-container">
+				<h2>Характеристики среды(нормированные)</h2>
+				<div class="param-input">
+					<label class="param-label">Дисперсия второго порядка L<sub>норм</sub>/L<sub>D2</sub>:</label>
+					{{ form.muFD2 }}
+				</div>
+				{% if form.muFD2.errors %}
+				<div class="errors-container">{{ form.muFD2.errors }}</div>
+				{% endif %}
+				<div class="param-input">
+					<label class="param-label">Знак дисперсии второго порядка sgn(&beta;2):</label>
+					{{ form.sgn2  }}
+				</div>
+
+				<div class="param-input">
+					<label class="param-label">Дисперсия третьего порядка L<sub>норм</sub>/L<sub>D3</sub>:</label>
+					{{ form.muFD3 }}
+				</div>
+				{% if form.muFD3.errors %}
+				<div class="errors-container">{{ form.muFD3.errors }}</div>
+				{% endif %}
+				<div class="param-input">
+					<label class="param-label">Знак дисперсии третьего порядка sgn(&beta;3):</label>
+					{{ form.sgn3 }}
+				</div>
+
+				<div class="param-input">
+					<label class="param-label">Фазовая самомодуляция L<sub>норм</sub>/L<sub>NL</sub>:</label>
+					{{ form.muFN }}
+				</div>
+				{% if form.muFN.errors %}
+				<div class="errors-container">{{ form.muFN.errors }}</div>
+				{% endif %}
+
+				<div class="param-input">
+					<label class="param-label">Ударная волна огибающей L<sub>норм</sub>/L<sub>S</sub>:</label>
+					{{ form.muFs }}
+				</div>
+				{% if form.muFs.errors %}
+				<div class="errors-container">{{ form.muFs.errors }}</div>
+				{% endif %}
+
+				<div class="param-input">
+					<label class="param-label">Вынужденное комбинационное саморассеяние L<sub>норм</sub>/L<sub>ICS</sub>:</label>
+					{{ form.muFL }}
+				</div>
+				{% if form.muFL.errors %}
+				<div class="errors-container">{{ form.muFL.errors }}</div>
+				{% endif %}
+
+				<div class="param-input">
+					<label class="param-label">Потери L<sub>норм</sub>*&alpha;:</label>
+					{{ form.alpha0 }}
+				</div>
+				{% if form.alpha0.errors %}
+				<div class="errors-container">{{ form.alpha0.errors }}</div>
+				{% endif %}
+			</div>
+			<div class="param-container">
+				<h2>Входной импульс</h2>
+				<div class="param-input">
+					{{ form.pulse }}
+				</div>
+				<div class="param-input">
+					<label class="param-label">Частотная модуляция C:</label>
+					{{ form.ccf }}
+				</div>
+				{% if form.ccf.errors %}
+				<div class="errors-container">{{ form.ccf.errors }}</div>
+				{% endif %}
+				<div class="param-input">
+					<label class="param-label">Крутизна фронта m:</label>
+					{{ form.mcf }}
+				</div>
+				{% if form.mcf.errors %}
+				<div class="errors-container">{{ form.mcf.errors }}</div>
+				{% endif %}
+			</div>
+
+			<div class="buttons-container">
+				{% if request.user.is_authenticated %}
+					<button class="experiment-accept-button" type="button" id="savebutton" onclick="Popup()">Сохранить</button>
+				{% else %}
+					<button class="experiment-accept-button" type="button" onclick="Alert()">Сохранить</button>
+				{% endif %}
+				<button class="experiment-accept-button" type="submit" name="_calc">Рассчитать</button>
+				<button class="experiment-accept-button" type="button" onclick="Reset()">Сброс</button>
+			</div>
+			<div class="popup">
+				<div class="popup__container">
+					<div id="blablabla">
+						{{ form.name }}
+						<button type="submit" class="popup-button accept" name="_save">Сохранить</button>
+						<button type="button" class="popup-button cancel" id="cancelbutton" onclick="Cancel()">Отмена</button>
+					</div>
+				</div>
+			</div>
+
+		</form>
+	</div>
+
+	{% if is_chart %}
+	<a id="top-chart"></a>
+	<div class="charts-container">
+		<div class="chart3d">
+			{{ impulse_shape | safe}}
+		</div>
+		<div class="chart3d">
+			{{ impulse | safe}}
+		</div>
+	</div>
+	<div class="charts-container">
+		<div class="chart3d">
+			{{ spectrum_shape | safe}}
+		</div>
+		<div class="chart3d">
+			{{ spectrum | safe}}
+		</div>
+	</div>
+	<div class="chart-container">
+		<div class="chart2d">
+			{{ integral_intensity | safe}}
+		</div>
+	</div>
+	{% endif %}
+	<script>
+		loadFunc();
+	</script>
+{% endblock %}

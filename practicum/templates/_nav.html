@@ -1,0 +1,26 @@
+<nav class="navbar">
+    <div class = 'Header'>
+        <a href="{% url 'home' %}">Практис</a>
+        <a role="none" class="header-divider"></a>
+        <a href="{% url 'methodical_instructions' %}" class="method-instructions">Методические указания</a>
+    </div>
+    <div class = 'authen'>
+        {% if request.user.is_authenticated %}
+        <details >
+            <summary class="authen">{{ request.user.first_name }} {{ request.user.last_name }}</summary>
+            <details-menu>
+                <a href="{% url 'profile' request.user.pk %}">Профиль</a>
+                <div role="none" class="dropdown-divider"></div>
+                <a href="{% url 'logout' %}">Выйти</a>
+            </details-menu>
+        </details>
+
+        {% else %}
+            <a href="{% url 'authen' %}">Вход</a>
+            <a role="none" class="header-divider"></a>
+            <a href="{% url 'register' %}">Регистрация</a>
+        {% endif %}
+    </div>
+</nav>
+
+

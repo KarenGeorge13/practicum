@@ -1,0 +1,18 @@
+{% load static %}
+<!Doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Главная страница{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    {% include '_nav.html' %}
+    <p></p>
+    {% block content%}
+    {% endblock %}
+</body>
+</html>
+

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %} {{ user.first_name }} {{ user.last_name }} {% endblock %}
+{% block content %}
+<div class="container">
+	<div class="first-last-name">
+		<p>{{ user.first_name }} {{ user.last_name }}</p>
+	</div>
+
+	{% for item in parameters %}
+		<div class="parameter-set">
+			<div class="parameter-set-header">
+				<p class="header-left">{{ item.name }}</p>
+				<div class='parameter-set-right'>
+					<div class='parameter-set-right-field'>
+						<a href="{% url 'delete-parameter' item.pk %}" class="header-right">Удалить</a>
+					</div>
+					<div class='parameter-set-right-field'>
+						<a href="{% url 'parameter-based-experiment' item.pk %}" class="header-right">Загрузить</a>
+					</div>
+				</div>
+			</div>
+			<div class="parameter-set-body">
+				<div class="parameter-column">
+					<h3>Рассчетная область</h3>
+					<p class="parameter">Размер временной оси T: {{ item.T }}</p>
+					<p class="parameter">Число точек N: {{ item.N }}</p>
+					<p class="parameter">Нормирующая длина: {{ item.norm_length }}</p>
+					<p class="parameter">Размер L: {{ item.L }}</p>
+					<p class="parameter">Число точек дискретизации N1: {{ item.N1 }}</p>
+
+					<h3>Входной импульс</h3>
+					<p class="parameter">Форма импульса: {{ item.pulse }}</p>
+					<p class="parameter">Частотная модуляция C: {{ item.ccf }}</p>
+					<p class="parameter">Крутизна фронта m: {{ item.mcf }}</p>
+				</div>
+				<div class="parameter-column">
+					<h3>Характеристики среды</h3>
+					<p class="parameter">Дисперсия второго порядка: {{ item.muFD2 }}</p>
+					<p class="parameter">Знак дисперсии второго порядка: {{ item.sgn2 }}</p>
+					<p class="parameter">Дисперсия третьего порядка: {{ item.muFD3 }}</p>
+					<p class="parameter">Знак дисперсии третьего порядка: {{ item.sgn3 }}</p>
+					<p class="parameter">Фазовая самомодуляция: {{ item.muFN }}</p>
+					<p class="parameter">Ударная волна огибающей: {{ item.muFs }}</p>
+					<p class="parameter">Вынужденное комбинационное саморассеяние: {{ item.muFL }}</p>
+					<p class="parameter">Потери: {{ item.alpha0 }}</p>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+
+</div>
+{% endblock %}
